@@ -40,20 +40,14 @@ class ApacheLogAnalyzer
     # and pass them to the count_hits function to be counted
     File.open(file_name).each do |line|
          ip = ip_regex.match(line)[0]
-        url = url_regex.match(line)
-        url == nil ? url = "no url" : url = url[0]
-        secret = false
-        error = false
-                if line.include? "secret"
-                  secret = true
-                end
-                if line.include? "404"
-                  error = true
-                end
+         url = url_regex.match(line)[0]
+         secret = line.include?("secret")
+         error = line.include?("404")
         count_hits(ip, url, secret, error)
     end
     print_hits
   end
+  
   private
   # Count the total and secret queries for a given ip
   #
@@ -64,20 +58,16 @@ class ApacheLogAnalyzer
   # - error: bool -- Whether or not the log entry contained a 404 error
   #
   def count_hits(ip, url, secret, error)
-     @total_hits_by_ip[ip] = @total_hits_by_ip[ip] + 1
-    @total_hits_per_url[url] = @total_hits_per_url[url] +1
-    if secret
-        @secret_hits_by_ip[ip] = @secret_hits_by_ip[ip] + 1
+    @total_hits_by_ip[ip] += 1
+    @total_hits_per_url[url] += 1
+    @secret_hits_by_ip[ip] += 1 if secret
+    @error_count += 1 if error
     end
-    if error
-        @error_count = @error_count + 1
-    end
-  end
     # TODO: Associate the request with the IP Address
     # TODO: Associate the request with the url requested
     # TODO: Associate the request with the IP if the query is for the Secret URL
     # TODO: Keep track of the total number of 404 errors served
-  end
+  
   # Print the number of queries for each ip to the secret url and in total
   #
   def print_hits
