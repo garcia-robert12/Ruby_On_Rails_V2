@@ -57,23 +57,3 @@ end
 if __FILE__ == $PROGRAM_NAME
   main
 end
-    end
-    url_print_string = 'URL: %s, Number of Hits: %s'
-    @total_hits_per_url.sort.each do |url, url_hits|
-      puts sprintf(url_print_string, url, url_hits)
-    end
-    puts sprintf('Total Errors: %s', @error_count)
-  end
- end
-def usage
-  puts "No log files passed, please pass at least one log file.\n\n"
-  puts "USAGE: #{$PROGRAM_NAME} file1 [file2 ...]\n\n"
-  puts "Analyzes apache2 log files for unique IP addresses and unique URLs."
-end
-def main
-  if ARGV.empty?
-    usage
-    exit(1)
-  end
-  ARGV.each do |file_name|
-    log_analyzer = ApacheLogAnalyzer.new
